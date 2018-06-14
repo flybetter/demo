@@ -9,6 +9,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="vim01">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/database/spark_project/demo-1.0-SNAPSHOT.jar" local="$PROJECT_DIR$/target/demo-1.0-SNAPSHOT.jar" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
   </component>
 </project>

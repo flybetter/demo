@@ -60,15 +60,19 @@ public class WordCount {
 //        Dataset<Row> df_log = spark.read().json("hdfs://master:8020/database/source/accesslog/temp.txt");
 
 
-//        Dataset<Row> df_log = spark.read().json("hdfs://master:8020/database/source/accesslog/20180609/accesslog_20180609");
+//        Dataset<Row> df_log = spark.read().json("hdfs://192.168.105.21:9000/database/source/accesslog/20180609/accesslog_20180609");
 
         String paths = HDFSDataSource.getPaths();
         Dataset<Row> df_log = spark.read().format("json").load(paths.split(","));
 
-        //TODO 新房的判断,去掉前面的channel的
+        //TODO 可以优化
         df_log = df_log.filter(df_log.col("projectId").startsWith("1"));
-        df_log = df_log.selectExpr("cast (userId as string) as USER_ID",
-                "concat(cityId,'_',projectId) as ITEM_ID");
+        df_log = df_log.selectExpr("cast (userId as string) as USER_ID", "cityId",
+                " cast (substring(projectId,7) as int)as item_id");
+
+        df_log = df_log.selectExpr("USER_ID",
+                " concat(cityid,'_',item_id) as ITEM_ID");
+
         df_log = df_log.dropDuplicates();
 
         //TODO 30
@@ -131,7 +135,7 @@ public class WordCount {
 
         final BiMap<Integer, Item> indexItemBiMap = HashBiMap.create();
         for (String key : itemRSIDIndexBiMap.keySet()) {
-            Item item = new Item(Integer.parseInt(key.split("_")[0]), Functors.getOriginHouseId(key.split("_")[1]));
+            Item item = new Item(Integer.parseInt(key.split("_")[0]), key.split("_")[1]);
             indexItemBiMap.put(itemRSIDIndexBiMap.get(key), item);
         }
 

@@ -10,6 +10,14 @@
           <option name="port" value="22151" />
         </fileTransfer>
       </webServer>
+      <webServer id="c69931c4-d02e-443d-a3f8-82a34ec1936e" name="vim01" url="http://192.168.105.21">
+        <fileTransfer host="192.168.105.21" port="22" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
