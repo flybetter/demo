@@ -26,9 +26,7 @@ import scala.Tuple2;
 import scala.Tuple3;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * WordCount class
@@ -45,11 +43,9 @@ public class WordCount {
      */
     private static final Logger logger = LoggerFactory.getLogger(WordCount.class);
 
-    private static final Pattern SPACE = Pattern.compile(" ");
-
     private static String redis_host = "127.0.0.1";
 
-    private static String redis_key = "recom_cid_orihid_to_hids";
+    private static String redis_key = "recom_cid_andprojectid_to_hids";
 
     public static void main(String[] args) {
         SparkSession spark = SparkSession
@@ -61,15 +57,24 @@ public class WordCount {
 
         JavaSparkContext sc = new JavaSparkContext(sparkContext);
 
-        Dataset<Row> df_log = spark.read().json("hdfs://192.168.105.21:9000/database/source/accesslog/temp.txt");
+//        Dataset<Row> df_log = spark.read().json("hdfs://master:8020/database/source/accesslog/temp.txt");
 
 
-        //TODO 新房的判断
+//        Dataset<Row> df_log = spark.read().json("hdfs://master:8020/database/source/accesslog/20180609/accesslog_20180609");
+
+        String paths = HDFSDataSource.getPaths();
+        Dataset<Row> df_log = spark.read().format("json").load(paths.split(","));
+
+        //TODO 新房的判断,去掉前面的channel的
+        df_log = df_log.filter(df_log.col("projectId").startsWith("1"));
         df_log = df_log.selectExpr("cast (userId as string) as USER_ID",
                 "concat(cityId,'_',projectId) as ITEM_ID");
+        df_log = df_log.dropDuplicates();
 
         //TODO 30
         df_log.coalesce(30);
+
+        logger.info("rows:" + df_log.count());
 
         JavaPairRDD<String, String> pairRDD = df_log.javaRDD().mapToPair(new Functors.ToPairRDDFunctor());
 
@@ -233,10 +238,10 @@ public class WordCount {
 
         for (Item item : recommend_result.keySet()) {
             ObjectMapper mapper = new ObjectMapper();
-            logger.info("recom_cid_orihid_to_hids^" + item.getCityid() + "^" + item.getProjectId());
+            logger.info(redis_key + "^" + item.getCityid() + "^" + item.getProjectId());
             try {
-                p.set("recom_cid_orihid_to_hids^" + item.getCityid() + "^" + item.getProjectId(), mapper.writeValueAsString(recommend_result.get(item)));
-            } catch (IOException e) {
+                p.set(redis_key + "^" + item.getCityid() + "^" + item.getProjectId(), mapper.writeValueAsString(recommend_result.get(item)));
+            } catch (Exception e) {
                 logger.error(e.toString());
             }
         }

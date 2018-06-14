@@ -2,12 +2,12 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="e91201e3-56c8-40b9-97fb-d163e388a2ac" name="vim01" url="http://192.168.105.21">
-        <fileTransfer host="192.168.105.21" port="22" accessType="SFTP">
+      <webServer id="6d81a0c4-0fbb-4404-acf5-7cd3d48a2686" name="master" url="http://202.102.83.169">
+        <fileTransfer host="202.102.83.169" port="22151" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
-          <option name="port" value="22" />
+          <option name="port" value="22151" />
         </fileTransfer>
       </webServer>
     </option>

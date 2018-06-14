@@ -29,7 +29,7 @@ public class SVDItemSimilarityComputer implements Serializable {
         rowMatrix = new IndexedRowMatrix(rowMatrix.rows().cache(), rowMatrix.numRows(), (int) rowMatrix.numCols());
 
         SingularValueDecomposition<IndexedRowMatrix, Matrix>
-                svd = rowMatrix.computeSVD(2, false, 0);
+                svd = rowMatrix.computeSVD(9, false, 0);
 
         Matrix vprime = svd.V(); // V是 M * k的矩阵，M为房源个数，K为保留的奇异值个数
 

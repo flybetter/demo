@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="vim01">
+  <component name="PublishConfigData">
     <serverData>
-      <paths name="vim01">
+      <paths name="master">
         <serverdata>
           <mappings>
-            <mapping deploy="/database/spark_project/" local="$PROJECT_DIR$/target/" web="/" />
+            <mapping deploy="/home/project" local="$PROJECT_DIR$/target/" web="/" />
           </mappings>
         </serverdata>
       </paths>
